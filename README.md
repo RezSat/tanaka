@@ -56,37 +56,41 @@ Looking ahead, we plan to:
 ## Installation
 To set up the project locally, follow these steps:
 1. Clone the repository:
+
     ```bash
     git clone https://github.com/RezSat/tanaka.git
     cd tanaka
     ```
 2. Create a virtual environment and activate it:
+
     ```bash
     python -m venv venv #use the relevant python command according to your system
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
 3. Install the dependencies:
+
     ```bash
     pip install -r requirements.txt
     ```
 4. Set the `FLASK_APP` Environment Variable (Optional, you need this if only trying to use `flask run` as run command)
 
-Before you run your application, you need to set the `FLASK_APP` environment variable to point to your `wsgi.py` file. This tells Flask which application to run.
+    Before you run your application, you need to set the `FLASK_APP` environment variable to point to your `wsgi.py` file. This tells Flask which application to run.
 
-In the terminal, you can set it like this:
+    In the terminal, you can set it like this:
 
-**On Unix or MacOS:**
-```sh
-export FLASK_APP=wsgi.py
-export FLASK_ENV=development  # Optional: for enabling debug mode
-```
+    **On Unix or MacOS:**
+    ```sh
+    export FLASK_APP=wsgi.py
+    export FLASK_ENV=development  # Optional: for enabling debug mode
+    ```
 
-**On Windows:**
-```sh
-set FLASK_APP=wsgi.py
-set FLASK_ENV=development  # Optional: for enabling debug mode
-```
-5. Run the application (see above if you are going to use the first command here):
+    **On Windows:**
+    ```sh
+    set FLASK_APP=wsgi.py
+    set FLASK_ENV=development  # Optional: for enabling debug mode
+    ```
+
+5. Run the application (see above (4) if you are going to use the first command here):
 
     ```bash
     flask run

@@ -341,7 +341,8 @@ def explain_problem():
     response = model.generate_content(text)
     return jsonify({'result': response.text})
 
-if __name__ == '__main__':
+
+def create_app():
     with get_db() as db:
         db.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -352,4 +353,11 @@ if __name__ == '__main__':
                 problems TEXT DEFAULT '[]'
             )
         ''')
+
+    return app
+
+"""
+if __name__ == '__main__':
+    app = create_app()
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+"""

@@ -110,7 +110,7 @@ To set up the project locally, follow these steps (before going any further make
     ```
 
 ## Usage
-1. Open your web browser and go to `http://127.0.0.1:5000/`.
+1. Open your web browser and go to `http://127.0.0.1:10000/`. ( configure ports and all as necessary from the wsgi.py file)
 2. Register or play as a guest.
 3. Choose between "Play Individual" or "Play with a Friend".
 4. Select your timer and difficulty level.

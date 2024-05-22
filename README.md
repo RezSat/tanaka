@@ -1,5 +1,9 @@
 # Tanaka: A Math Game
 
+
+![Home Page](tanaka.jpg)
+
+
 See the demo here: [https://tanaka-eyxp.onrender.com](https://tanaka-eyxp.onrender.com)
 **Note:** This is a hackathon project created for "Valentine Hacks by EduLearn".
 

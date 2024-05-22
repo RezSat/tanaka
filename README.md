@@ -114,11 +114,11 @@ To set up the project locally, follow these steps:
 ![Home Page](screenshots/home.png)
 ![login](screenshots/login.png)
 ![signup](screenshots/signup.png)
-![startpage](screenshots/start.png)
+![startpage](screenshots/play.png)
 ![Gameplay](screenshots/playing.png)
 ![GameplaywithFriend](screenshots/friend.png)
 ![review](screenshots/review.png)
-![results](screenshots/result.png)
+![results](screenshots/results.png)
 ![dashboard](screenshots/dashboard.png)
 
 ## Demo Video

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanaka: Login</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #363B4E;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #927FBF;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            padding: 2vw 3vw;
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        .login-container h1 {
+            color: white;
+            font-size: 5vw;
+            margin-bottom: 2vw;
+        }
+
+        .input-field {
+            background-color: #E0E0E0;
+            border: none;
+            border-radius: 10px;
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+            color: #363B4E;
+            font-size: 4vw;
+            margin: 2vw 0;
+            padding: 1vw;
+            width: 100%;
+            outline: none;
+            box-sizing: border-box;
+            height: 50px;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .neomorphic-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 4vw;
+            margin: 2vw 0;
+            padding: 1vw;
+            cursor: pointer;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+            width: 100%;
+            height: 50px;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .neomorphic-button:active {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+
+        @media (min-width: 600px) {
+            .login-container h1 {
+                font-size: 2.5vw;
+            }
+
+            .input-field, .neomorphic-button {
+                font-size: 1.5vw;
+                margin: 1vw 0;
+                padding: 0.5vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="text" name="username" class="input-field" placeholder="Username" required>
+            <input type="password" name="password" class="input-field" placeholder="Password" required>
+            <button type="submit" class="neomorphic-button" onclick="playSoundAndRedirect()">Login</button>
+        </form>
+        <button type="submit" class="neomorphic-button" onclick="playSoundAndRedirect('{{ url_for('home') }}')"">Go back</button>
+    </div>
+
+    <script>
+        function playSoundAndRedirect(url) {
+            var audio = new Audio('https://cdn.pixabay.com/download/audio/2022/03/24/audio_47f2aa4324.mp3?filename=mech-keyboard-02-102918.mp3');
+            audio.play();
+            console.log(url)
+            if (url) {
+                setTimeout(function() {
+                window.location.href = url;
+                }, 1000);
+            }
+            
+        }
+    </script>
+</body>
+</html>

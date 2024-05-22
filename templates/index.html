@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanaka: a math game</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #363B4E;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .neomorphic-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 2.5vw;
+            margin: 10px;
+            padding: 2vw 4vw;
+            cursor: pointer;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+            width: 300px;
+            min-width: 200px;
+            min-height: 70px;
+            text-align: center;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .neomorphic-button:active {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+
+        @media (max-width: 600px) {
+            .neomorphic-button {
+                width: 80%;
+                padding: 10px 0;
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="button-container">
+        <h1>Tanaka: A Math Game</h1>
+        <button class="neomorphic-button" onclick="playSoundAndRedirect('{{ url_for('login') }}')">Login</button>
+        <button class="neomorphic-button" onclick="playSoundAndRedirect('{{ url_for('signup') }}')">Sign-Up</button>
+        <button class="neomorphic-button" onclick="playSoundAndRedirect('{{ url_for('guest') }}')">Guest</button>
+    </div>
+
+    <script>
+        function playSoundAndRedirect(url) {
+            var audio = new Audio(
+                'https://cdn.pixabay.com/download/audio/2022/03/24/audio_47f2aa4324.mp3?filename=mech-keyboard-02-102918.mp3'
+                );
+            audio.play();
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        }
+
+        function checkLoginStatus() {
+            return fetch('/login_status')
+                .then(response => response.json())
+                .then(data => data.logged_in)
+                .catch(error => {
+                    console.error('Error checking login status:', error);
+                    return false;
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus().then(isLoggedIn => {
+                if (isLoggedIn) {
+                    window.location.href = '/start';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

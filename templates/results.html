@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanaka: Results</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Indie Flower', cursive;
+            margin: 0;
+            padding: 0;
+            background-color: #363B4E;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .result-container {
+            background-color: #927FBF;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            padding: 20px 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .heading {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .score-section {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .score-detail {
+            margin: 10px 0;
+        }
+
+        .neomorphic-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 10px 20px;
+            cursor: pointer;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .neomorphic-button:active {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #927FBF;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .card {
+            background-color: #484D63;
+            border: 2px solid #FFFFFF;
+            border-radius: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            align-content: baseline;
+
+        }
+
+        .card-content {
+            font-size: 1em;
+            color: #DDDDDD;
+            font-family: Arial, sans-serif;
+        }
+
+        .card button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+            background-color: #7B6FAE;
+        }
+
+        .save-button {
+            background: none;
+            border: none;
+            color: gold;
+            font-size: 1em;
+            float: right;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .save-button:hover {
+            color: darkorange;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="result-container">
+        <div class="heading">Results: {{ self_winner }}</div>
+        <div class="score-section">
+            <div class="score-detail">Your Score: <span id="score">{{ data.no_of_questions_correct }}</span></div>
+            <div class="score-detail">Questions Attempted: <span
+                    id="questionsAttempted">{{ data.no_of_questions_done }}</span></div>
+            <div class="score-detail">Correct Answers: <span
+                    id="correctAnswers">{{ data.no_of_questions_correct }}</span></div>
+            <div class="score-detail">Wrong Answers: <span id="wrongAnswers">{{ data.no_of_questions_wrong }}</span>
+            </div>
+        </div>
+        <button class="neomorphic-button" onclick="reviewProblems()">Review Problems</button>
+        <a href="/start"><button class="neomorphic-button">Play Again</button></a>
+    </div>
+
+    <!-- Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close" onclick="closeModal()">&times;</span><br><br>
+            <div id="problemsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const problems = {{data.problem_with_status | tojson}};
+        async function reviewProblems() {
+            const modal = document.getElementById("reviewModal");
+            const container = document.getElementById("problemsContainer");
+            const isLoggedIn = await checkLoginStatus();
+
+            container.innerHTML = '';
+            problems.forEach((problem, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `problem-${index}`;
+                /*card.innerHTML = `
+            <div class="card-header">
+                Problem ${index + 1}: ${problem.question}
+                ${isLoggedIn ? `<button class="save-button" onclick="saveProblem(${index})">★</button>` : ''}
+            </div>
+            <div class="card-content">
+                <p>Status: ${problem.status}</p>
+                <p>Answer: ${problem.answer}</p>
+                <p id='explanation-${index}' style="display: none"></p>
+                <button id='explain-button' onclick="explainProblem(${index})">Explain</button>
+            </div>
+        `;*/
+                var card_header = document.createElement('div');
+                card_header.className = 'card-header';
+                card_header.innerHTML = `Problem ${index + 1}: ${problem.question}`;
+                var save_button = document.createElement('button');
+                save_button.className = 'save-button';
+                save_button.innerHTML = '★';
+                save_button.addEventListener('click', (event) => saveProblem(index));
+                if (isLoggedIn) {
+                    card_header.appendChild(save_button);
+                }
+
+                card.appendChild(card_header);
+
+                var card_content = document.createElement('div');
+                card_content.className = 'card-content';
+                card_content.innerHTML = `<p>Status: ${problem.status}</p>`;
+                card_content.id = `problem-content-${index}`;
+
+                var answer = document.createElement('p');
+                answer.innerHTML = `Answer: ${problem.answer}`;
+                card_content.appendChild(answer);
+
+                var explaintion = document.createElement('p');
+                explaintion.id = `explanation-${index}`;
+                explaintion.style.display = 'none';
+                card_content.appendChild(explaintion);
+
+                var explain_button = document.createElement('button');
+                explain_button.id = `explain-button-${index}`;
+                explain_button.innerHTML = 'Explain';
+                explain_button.addEventListener('click', (event) => explainProblem(index));
+                card_content.appendChild(explain_button);
+
+                card.appendChild(card_content);
+
+                card.addEventListener('click', (event) => toggleCardContent(card, event));
+                container.appendChild(card);
+
+                MathJax.typeset([card]);
+            });
+
+            modal.style.display = "block";
+        }
+
+        function saveProblem(index) {
+            const problem = problems[index];
+            fetch('/save_problem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        problem
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Problem saved successfully!');
+                    } else {
+                        alert('Failed to save problem.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the problem.');
+                });
+        }
+
+        function checkLoginStatus() {
+            return fetch('/login_status')
+                .then(response => response.json())
+                .then(data => data.logged_in)
+                .catch(error => {
+                    console.error('Error checking login status:', error);
+                    return false;
+                });
+        }
+
+        function closeModal() {
+            document.getElementById("reviewModal").style.display = "none";
+        }
+
+        function toggleCardContent(card, event) {
+            event.stopPropagation();
+            const content = card.querySelector('.card-content');
+            const allContents = document.querySelectorAll('.card-content');
+            allContents.forEach(c => {
+                if (c !== content) {
+                    c.style.display = 'none';
+                }
+            });
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function explainProblem(index) {
+            const problem = problems[index];
+            var card = document.getElementById(`problem-${index}`);
+            const content = card.querySelector('.card-content');
+            const allContents = document.querySelectorAll('.card-content');
+            allContents.forEach(c => {
+                if (c !== content) {
+                    c.style.display = 'none';
+                }
+            });
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            fetch('/explain_problem', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        problem
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var explanation = document.getElementById(`explanation-${index}`);
+                    explanation.innerHTML = data.result;
+                    explanation.style.display = 'block';
+                    MathJax.typeset([explanation]);
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById("reviewModal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+
+</html>

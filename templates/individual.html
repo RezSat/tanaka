@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanaka: Individual Player</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Indie Flower', cursive;
+            margin: 0;
+            padding: 0;
+            background-color: #363B4E;
+            color: #FFFFFF;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            margin-top: 10px;
+
+        }
+
+        .heading {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .subheading {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .timer-container {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .player-details {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .player-details .details {
+            width: 45%;
+            border: 2px solid #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .player-details .details h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .problem-container {
+            border: 2px solid #FFFFFF;
+            padding: 100;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            max-width: fit-content*2;
+            align-content: center;
+            align-self: center;
+        }
+
+        .answers-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-direction: column;
+
+        }
+
+        .answer-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .answer-button.selected {
+            background-color: #3009bc;
+            color: white;
+            border-color: #3009bc;
+        }
+
+
+        .next-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .next-button:hover {
+            background-color: #7B6FAE;
+        }
+
+        div.questionBox {
+            color: #000;
+            background-color: #fff
+        }
+
+        .questionTable {
+            margin: .4em auto;
+            border: 1px solid white;
+        }
+
+        .questionTable td {
+            padding: .2em;
+            font-size: .75em;
+            width: 1.4em;
+            border: 1px solid white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">Tanaka: Individual Player</div>
+        <div class="subheading">Challenge Yourself with Math Puzzles!</div>
+        <div class="timer-container">
+            <div class="player-details">
+                <div class="details">
+                    <h4>Your Timer</h4>
+                    <div id="yourTimer">
+                        <h1>{{ timer }}:00</h1>
+                    </div>
+                    <button id="startButton" class="next-button">Start Game</button>
+                    <h3>Questions Solved: <span id="yourQuestions">0</span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="all" id="all" style="display: none;">
+            <center><button class="next-button" id="nextButton">Next Question</button></center>
+            <br>
+            <div class="problem-container">
+                <div class="question" style="font-family: Arial, sans-serif;"></div>
+                <div class="answers-container" style="font-family: Arial, sans-serif;">
+                    <button class="answer-button"></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        var questionsData = []; 
+        var currentQuestionIndex = 0; 
+        var loadingQuestions = false; 
+        var selectedAnswerIndex = -1;
+        var currentProblemanswer = null;
+        var currentProblem = null;
+        var currentAnswer = null;
+        var answerList = [];
+
+        var dataNeed = {};
+        dataNeed.no_of_questions_done = 0;
+        dataNeed.no_of_questions_correct = 0;
+        dataNeed.no_of_questions_wrong = 0;
+        dataNeed.problem_with_status = [];
+
+        var timerIntervalId = null;
+
+        document.getElementById("startButton").addEventListener("click", function () {
+            this.style.display = "none";
+            fetchQuestions();
+        });
+
+        document.getElementById("nextButton").addEventListener("click", function () {
+            currentQuestionIndex++;
+            dataNeed.no_of_questions_done = currentQuestionIndex;
+            document.getElementById("yourQuestions").innerHTML = currentQuestionIndex;
+            selectedAnswerIndex = -1;
+
+            if (currentAnswer == currentProblemanswer) {
+                dataNeed.no_of_questions_correct = dataNeed.no_of_questions_correct + 1;
+                currentProblem.status = "solved";
+                dataNeed.problem_with_status.push(currentProblem);
+                displayNextQuestion();
+
+            } else {
+                if (checkEquality(currentProblemanswer, currentAnswer) == "yes") {
+                    dataNeed.no_of_questions_correct = dataNeed.no_of_questions_correct + 1;
+                    currentProblem.status = "solved";
+                    dataNeed.problem_with_status.push(currentProblem);
+                    displayNextQuestion();
+                } else {
+                    currentProblem.status = "unsolved";
+                    dataNeed.no_of_questions_wrong = dataNeed.no_of_questions_wrong + 1;
+                    dataNeed.problem_with_status.push(currentProblem);
+                    displayNextQuestion();
+                }
+            }
+
+        });
+
+        function fetchQuestions() {
+            if (loadingQuestions) {
+                return;
+            }
+            loadingQuestions = true;
+
+            fetch("/getq?level={{ level }}&n=25") 
+                .then(response => response.json())
+                .then(data => {
+                    questionsData = questionsData.concat(data);
+                    displayNextQuestion();
+                    document.getElementById("all").style.display = "block";
+                    loadingQuestions = false;
+
+                    var timerValue = parseInt('{{ timer }}');
+                    var timerElement = document.getElementById("yourTimer");
+                    var startTime = new Date().getTime();
+                    var endTime = startTime + timerValue * 60000;
+
+                    if (timerIntervalId) {
+                        clearInterval(timerIntervalId);
+                    }
+
+                    timerIntervalId = setInterval(function () {
+                        var now = new Date().getTime();
+                        var remainingTime = endTime - now;
+                        if (remainingTime <= 0) {
+                            timerElement.innerHTML = "<h1>00:00</h1>";
+                            clearInterval(timerIntervalId);
+                            console.log("time out");
+                            sendDataToBackend();
+                        } else {
+                            var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                            var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+                            minutes = minutes < 10 ? "0" + minutes : minutes;
+                            seconds = seconds < 10 ? "0" + seconds : seconds;
+                            timerElement.innerHTML = "<h1><span>" + minutes + "</span>:<span>" + seconds +
+                                "</span></h1>";
+                        }
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    loadingQuestions = false;
+                });
+        }
+
+        function displayNextQuestion() {
+            if (currentQuestionIndex < questionsData.length) {
+                var problemContainer = document.querySelector(".problem-container");
+                problemContainer.innerHTML = "";
+                var questionText = questionsData[currentQuestionIndex].question;
+                currentProblem = questionsData[currentQuestionIndex];
+                currentProblemanswer = questionsData[currentQuestionIndex].answer;
+                console.log(currentProblem);
+                var questionDiv = document.createElement("div");
+                questionDiv.classList.add("question");
+                questionDiv.innerHTML = questionText;
+                questionDiv.style.fontFamily = "Arial, sans-serif";
+                problemContainer.appendChild(questionDiv);
+
+                var answersContainer = document.createElement("div");
+                answersContainer.classList.add("answers-container");
+                answersContainer.style.fontFamily = "Arial, sans-serif";
+
+                answerList = questionsData[currentQuestionIndex].more; 
+                answerList.length = 3;
+                let randomIndex = Math.floor(Math.random() * answerList.length);
+                answerList.splice(randomIndex, 0, questionsData[currentQuestionIndex].answer);
+                var index = 0;
+                answerList.forEach(function (answer) {
+                    var answerDiv = document.createElement("div");
+                    answerDiv.classList.add("answer-button");
+                    answerDiv.dataset.answerIndex = index;
+                    index++;
+                    answerDiv.innerHTML = answer;
+                    answerDiv.addEventListener("click", function () {
+                        document.querySelectorAll(".answer-button").forEach(function (btn) {
+                            selectedAnswerIndex = -1;
+                            btn.classList.remove("selected");
+                        });
+                        answerDiv.classList.add("selected");
+                        var answerIndex = answerDiv.dataset.answerIndex;
+                        selectedAnswerIndex = answerIndex;
+                        currentAnswer = answerList[answerIndex];
+                    });
+                    answersContainer.appendChild(answerDiv);
+                });
+
+                problemContainer.appendChild(answersContainer);
+                MathJax.typeset([questionDiv, answersContainer]);
+                if (currentQuestionIndex < questionsData.length - 1) {
+                    document.getElementById("nextButton").style.display = "block";
+                } else {
+                    document.getElementById("nextButton").style.display = "none";
+                }
+                if (currentQuestionIndex + 5 >= questionsData.length) {
+                    fetchQuestions();
+                }
+            }
+        }
+
+        function checkEquality(expr1, expr2) {
+            fetch('/check_equality', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        expr1: expr1,
+                        expr2: expr2
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.result);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function sendDataToBackend() {
+            fetch('/results', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataNeed)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    document.open();
+                    document.write(data);
+                    document.close();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+
+</body>
+
+</html>

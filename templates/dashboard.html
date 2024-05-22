@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #363B4E;
+            font-family: 'Indie Flower', cursive;
+            color: #FFFFFF;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            overflow-y: scroll;
+            height: 80vh;
+            width: 100%;
+
+            h2 {
+                font-size: 2.5em;
+                margin-bottom: 20px;
+            }
+
+            p {
+                font-size: 1.5em;
+                margin-bottom: 10px;
+            }
+
+            h3 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            li {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+
+            .card {
+                background-color: #484D63;
+                border: 2px solid #FFFFFF;
+                border-radius: 10px;
+                margin: 10px 0;
+                padding: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .card-header {
+                font-size: 1.2em;
+                font-weight: bold;
+                color: #FFFFFF;
+                font-family: Arial, sans-serif;
+                align-content: baseline;
+
+            }
+
+            .card-content {
+                font-size: 1em;
+                color: #DDDDDD;
+                font-family: Arial, sans-serif;
+            }
+
+            .neomorphic-button {
+                background-color: #927FBF;
+                border: none;
+                border-radius: 15px;
+                box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+                color: white;
+                font-size: 1.2em;
+                margin: 20px 0;
+                padding: 10px 20px;
+                cursor: pointer;
+                outline: none;
+                transition: box-shadow 0.3s ease;
+            }
+
+            .neomorphic-button:active {
+                box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Welcome, {{ username }}!</h2>
+        <p>High Score: {{ high_score }}</p>
+        <button class="neomorphic-button" onclick="playSoundAndRedirect('/start')">Play</button>
+        <button class="neomorphic-button" onclick="playSoundAndRedirect('/logout')">Logout</button>
+        <h3>Saved Problems</h3>
+        <br>
+        <br>
+
+        <div id="problemsContainer"></div>
+    </div>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        const problems = {{problems | tojson}};
+        const pcontainer = document.getElementById("problemsContainer");
+        pcontainer.innerHTML = '';
+        problems.slice(0, 10).forEach((problem, index) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+            <div class="card-header">
+                Problem: ${problem.question}
+            </div>
+            <div class="card-content">
+                <p>Answer: ${problem.answer}</p>
+                <button onclick="explainProblem(${index})">Explain</button>
+            </div>
+        `;
+            pcontainer.appendChild(card);
+
+            MathJax.typeset([card]);
+
+        });
+
+        function playSoundAndRedirect(url) {
+            var audio = new Audio(
+                'https://cdn.pixabay.com/download/audio/2022/03/24/audio_47f2aa4324.mp3?filename=mech-keyboard-02-102918.mp3'
+            );
+            audio.play();
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

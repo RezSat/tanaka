@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanaka: A Math Game</title>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet'>
+    <style>
+        body {
+            font-family: 'Indie Flower', cursive;
+            margin: 0;
+            padding: 0;
+            background-color: #363B4E;
+            color: #FFFFFF;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .heading {
+            font-size: 3em;
+            margin-bottom: 20px;
+
+        }
+
+        .subheading {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .neomorphic-button {
+            background-color: #927FBF;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 1.2em;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+            font-family: 'Indie Flower', cursive;
+        }
+
+        .neomorphic-button:active {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #927FBF;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #FFFFFF;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .neomorphic-select {
+            background-color: #363B4E;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 1em;
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .neomorphic-select:active {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+
+        .neomorphic-input {
+            background-color: #363B4E;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 8px 8px 16px #2C2F3E, -8px -8px 16px #4E5370;
+            color: white;
+            font-size: 1em;
+            margin: 10px;
+            padding: 10px;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .neomorphic-input:focus {
+            box-shadow: inset 8px 8px 16px #4F3B78, inset -8px -8px 16px #4F3B78;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading">Tanaka: A Math Game</div>
+        <div class="subheading">Challenge Yourself with Math Puzzles!</div>
+        {% if 'user_id' in session %}
+        <a href="{{ url_for('dashboard') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" id="user">
+                <path fill="#000" fill-rule="evenodd"
+                    d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Zm3-12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 7a7.489 7.489 0 0 1 6-3 7.489 7.489 0 0 1 6 3 7.489 7.489 0 0 1-6 3 7.489 7.489 0 0 1-6-3Z"
+                    clip-rule="evenodd"></path>
+            </svg>
+        </a>
+        {% endif %}
+        <div class="button-container">
+            <button class="neomorphic-button" onclick="openModal('individual')">Play Individual</button>
+            <button class="neomorphic-button" onclick="openModal('friend')">Play with a Friend</button>
+            <!-- <button class="neomorphic-button" onclick="openModal('random')">Play Random</button>-->
+        </div>
+        <!-- Individual Modal -->
+        <div id="individualModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('individual')">&times;</span>
+                <h2>Play Individual</h2>
+                <label for="individualtimer">Select Timer:</label>
+                <select id="individualtimer" class="neomorphic-select"
+                    onchange="toggleCustomTimer('individualtimer', 'individualecustomTimerInput')">
+                    <option value="1">1 Minute</option>
+                    <option value="2">2 Minutes</option>
+                    <option value="5">5 Minutes</option>
+                    <option value="10">10 Minutes</option>
+                    <option value="custom">Custom Timer</option>
+                </select>
+                <br><br>
+                <div id="individualcustomTimerInput" style="display: none;">
+                    <label for="individualcustomMinutes">Custom Minutes:</label>
+                    <input type="number" id="individualcustomMinutes" min="1" max="60" class="neomorphic-input">
+                    <br><br>
+                </div>
+                <label for="individuallevel">Select Level:</label>
+                <select id="individuallevel" class="neomorphic-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+                <br><br>
+                <button class="neomorphic-button" onclick="startGame('individual')">Start Game</button>
+            </div>
+        </div>
+
+        <!-- Friend Modal -->
+        <div id="friendModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('friend')">&times;</span>
+                <h2>Play with a Friend</h2>
+                <label for="friendtimer">Select Timer:</label>
+                <select id="friendtimer" class="neomorphic-select"
+                    onchange="toggleCustomTimer('friendtimer', 'friendcustomTimerInput')">
+                    <option value="1">1 Minute</option>
+                    <option value="2">2 Minutes</option>
+                    <option value="5">5 Minutes</option>
+                    <option value="10">10 Minutes</option>
+                    <option value="custom">Custom Timer</option>
+                </select>
+                <br><br>
+                <div id="friendcustomTimerInput" style="display: none;">
+                    <label for="friendcustomMinutes">Custom Minutes:</label>
+                    <input type="number" id="friendcustomMinutes" min="1" max="60" class="neomorphic-input">
+                    <br><br>
+                </div>
+                <label for="friendlevel">Select Your Level:</label>
+                <select id="friendlevel" class="neomorphic-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+                <br><br>
+                <!--<input type="checkbox" id="fixedLevel">
+                <label for="fixedLevel">Fixed Level (Both Players Get Same Level)</label>
+                <br><br>-->
+                <button class="neomorphic-button" onclick="startGame('friend')">Start Game</button>
+            </div>
+        </div>
+
+        <!-- Random Modal
+        <div id="randomModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('random')">&times;</span>
+                <h2>Play Random</h2>
+                <label for="randomtimer">Select Timer:</label>
+                <select id="randomtimer" class="neomorphic-select"
+                    onchange="toggleCustomTimer('randomtimer', 'randomcustomTimerInput')">
+                    <option value="1">1 Minute</option>
+                    <option value="2">2 Minutes</option>
+                    <option value="5">5 Minutes</option>
+                    <option value="10">10 Minutes</option>
+                    <option value="custom">Custom Timer</option>
+                </select>
+                <br><br>
+                <div id="randomcustomTimerInput" style="display: none;">
+                    <label for="randomcustomMinutes">Custom Minutes:</label>
+                    <input type="number" id="randomcustomMinutes" min="1" max="60" class="neomorphic-input">
+                    <br><br>
+                </div>
+                <label for="randomlevel">Select Level:</label>
+                <select id="randomlevel" class="neomorphic-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+                <br><br>
+                <button class="neomorphic-button" onclick="startGame('random')">Start Game</button>
+            </div>
+        </div> -->
+        <script>
+            function openModal(type) {
+                document.getElementById(type + "Modal").style.display = "block";
+            }
+
+            function closeModal(type) {
+                document.getElementById(type + "Modal").style.display = "none";
+            }
+
+            // Close modals when clicking outside the modal
+            window.onclick = function (event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = "none";
+                }
+            };
+
+            function toggleCustomTimer(timerSelectId, customTimerInputId) {
+                var timerSelect = document.getElementById(timerSelectId);
+                var customTimerInput = document.getElementById(customTimerInputId);
+
+                if (timerSelect.value === "custom") {
+                    customTimerInput.style.display = "block";
+                } else {
+                    customTimerInput.style.display = "none";
+                }
+            }
+
+
+            function startGame(type) {
+                var timer = document.getElementById(type + "timer").value;
+                var level = document.getElementById(type + "level").value;
+                var customMinutes = document.getElementById(type + "customMinutes").value;
+
+                if (timer === "custom") {
+                    timer = customMinutes;
+                }
+
+                var friendMode = false;
+                var redirectUrl = `/${type}?timer=${timer}&level=${level}&friendMode=${friendMode}`;
+
+
+                playSoundAndRedirect(redirectUrl)
+            }
+
+
+            function playSoundAndRedirect(url) {
+                var audio = new Audio(
+                    'https://cdn.pixabay.com/download/audio/2022/03/24/audio_47f2aa4324.mp3?filename=mech-keyboard-02-102918.mp3'
+                );
+                audio.play();
+                setTimeout(function () {
+                    window.location.href = url;
+                }, 1000);
+            }
+        </script>
+</body>
+
+</html>

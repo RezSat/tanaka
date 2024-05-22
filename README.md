@@ -54,25 +54,32 @@ Looking ahead, we plan to:
 - Optimize the codebase, separate CSS and JS into their own files, and improve the overall user interface and experience.
 
 ## Installation
-To set up the project locally, follow these steps:
+To set up the project locally, follow these steps (before going any further make sure you have Google's GEMINI API ready):
+
 1. Clone the repository:
 
     ```bash
     git clone https://github.com/RezSat/tanaka.git
     cd tanaka
     ```
-2. Create a virtual environment and activate it:
+2. Once you in the folder create a new .env file and add the following:
+
+    ```
+    GEMINI_API_KEY = "Your Api Key here"
+    ```
+
+3. Create a virtual environment and activate it:
 
     ```bash
     python -m venv venv #use the relevant python command according to your system
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
-3. Install the dependencies:
+4. Install the dependencies:
 
     ```bash
     pip install -r requirements.txt
     ```
-4. Set the `FLASK_APP` Environment Variable (Optional, you need this if only trying to use `flask run` as run command)
+5. Set the `FLASK_APP` Environment Variable (Optional, you need this if only trying to use `flask run` as run command)
 
     Before you run your application, you need to set the `FLASK_APP` environment variable to point to your `wsgi.py` file. This tells Flask which application to run.
 
@@ -90,7 +97,7 @@ To set up the project locally, follow these steps:
     set FLASK_ENV=development  # Optional: for enabling debug mode
     ```
 
-5. Run the application (see above (4) if you are going to use the first command here):
+6. Run the application (see above (4) if you are going to use the first command here):
 
     ```bash
     flask run

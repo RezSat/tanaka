@@ -87,6 +87,7 @@ To set up the project locally, follow these steps (before going any further make
     ```bash
     pip install -r requirements.txt
     ```
+<!--
 5. Set the `FLASK_APP` Environment Variable (Optional, you need this if only trying to use `flask run` as run command)
 
     Before you run your application, you need to set the `FLASK_APP` environment variable to point to your `wsgi.py` file. This tells Flask which application to run.
@@ -104,14 +105,14 @@ To set up the project locally, follow these steps (before going any further make
     set FLASK_APP=wsgi.py
     set FLASK_ENV=development  # Optional: for enabling debug mode
     ```
-
-6. Run the application (see above (4) if you are going to use the first command here):
-
+-->
+5. Run the application: <!-- (see above (4) if you are going to use the first command here):-->
+    <!--
     ```bash
     flask run
     ```
 
-    or 
+    or -->
 
     ```bash
     python wsgi.py #use the relevant python command according to your system

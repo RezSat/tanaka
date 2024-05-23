@@ -64,6 +64,8 @@ Looking ahead, we plan to:
 ## Installation
 To set up the project locally, follow these steps (before going any further make sure you have Google's GEMINI API ready):
 
+[Watch the windows installation guide here, if needed](https://youtu.be/5RYispi6z_k)
+
 1. Clone the repository:
 
     ```bash
@@ -138,7 +140,7 @@ To set up the project locally, follow these steps (before going any further make
 ![dashboard](screenshots/dashboard.png)
 
 ## Demo Video
-[Watch the Demo Video](https://www.example.com/demo)
+[Watch the Demo Video](https://youtu.be/TQGIi6lIMwg)
 
 
 ## License

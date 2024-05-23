@@ -5,7 +5,10 @@
 
 
 See the demo here: [https://tanaka-eyxp.onrender.com](https://tanaka-eyxp.onrender.com)
-**Note:** This is a hackathon project created for "Valentine Hacks by EduLearn".
+
+| Demo might be a little slower to respond and also due to this reason some things might not be work correctly, this is  because of the free-tier usage of render.com, however if setup locally everything will work just fine as showcased in demo videos.
+
+| **Note:** This is a hackathon project created for "Valentine Hacks by EduLearn".
 
 ## Table of Contents
 - [Inspiration](#inspiration)
@@ -115,7 +118,7 @@ To set up the project locally, follow these steps (before going any further make
     ```
 
 ## Usage
-1. Open your web browser and go to `http://127.0.0.1:10000/`. ( configure ports and all as necessary from the wsgi.py file)
+1. Open your web browser and go to `http://127.0.0.1:10000/`. ( configure ports and all as necessary from the wsgi.py file )
 2. Register or play as a guest.
 3. Choose between "Play Individual" or "Play with a Friend".
 4. Select your timer and difficulty level.

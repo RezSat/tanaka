@@ -1,16 +1,12 @@
-from collections import defaultdict
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from flask_socketio import SocketIO, join_room, leave_room, emit, rooms
+from flask_socketio import SocketIO, join_room, emit
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import json
 from MathsbotAPI import generate_random_questions
-from sympy import latex, simplify
-from sympy.parsing.latex import parse_latex
 import google.generativeai as genai
 import uuid
 import time
-import base64
 import json
 import os
 from dotenv import load_dotenv

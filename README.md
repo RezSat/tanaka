@@ -8,7 +8,7 @@ See the demo here: [https://tanaka-eyxp.onrender.com](https://tanaka-eyxp.onrend
 
 | Demo might be a little slower to respond and also due to this reason some things might not be work correctly, this is  because of the free-tier usage of render.com, however if setup locally everything will work just fine as showcased in demo videos.
 
-| **Note:** This is a hackathon project created for "Valentine Hacks by EduLearn".
+| **Note:** This is a hackathon project.
 
 ## Table of Contents
 - [Inspiration](#inspiration)
